@@ -1,6 +1,5 @@
-SELECT COUNT(h.id)           AS  headlines_count,
-       sum(h.predicted_class)AS total_positive_headlines,
-       round(((sum(h.predicted_class)/count(h.id))*100),2) AS percent_positive_headlines,
+SELECT COUNT(h.id)           AS headlines_count, 
+               AVG(semantic_value),    
 CASE
 WHEN h.origin LIKE '%guardian%' OR h.origin LIKE '%The Guardian%' THEN 'the-guardian'
            WHEN h.origin IN ('Daily Mail', 'daily-mail', 'Dailymail.co.uk') THEN 'daily-mail'
@@ -10,7 +9,7 @@ WHEN h.origin LIKE '%guardian%' OR h.origin LIKE '%The Guardian%' THEN 'the-guar
            WHEN h.origin IN ('Mirror Online', 'Mirror.co.uk') THEN 'the-mirror'
            WHEN h.origin IN ('YouTube', 'Youtube.com') THEN 'youtube'
            WHEN h.origin IN ('The Times', 'Thetimes.co.uk', 'the-times') THEN 'the-times'
-           WHEN h.origin IN ('Nytimes.com', 'New York Times') THEN 'the-new-york-times'
+           WHEN h.origin IN ('Nytimes.com', 'New York Times') THEN 'new-york-times'
            WHEN h.origin IN ('Nypost.com', 'New York Post') THEN 'new-york-post'
            WHEN h.origin IN ('NPR', 'Npr.org') THEN 'new-york-post'
            WHEN h.origin IN ('Skysports.com', 'Sky Sports', 'Sky', 'Sky.com') THEN 'sky'
@@ -22,13 +21,26 @@ WHEN h.origin LIKE '%guardian%' OR h.origin LIKE '%The Guardian%' THEN 'the-guar
            WHEN h.origin IN ('Itv.com', 'ITV News') THEN 'itv-news'
            WHEN h.origin IN ('CBS Sports', 'Cbssports.com') THEN 'cbs-sports'
            WHEN h.origin IN ('Los Angeles Times', 'Latimes.com') THEN 'los-angeles-times'
-           ELSE h.origin END AS filtered_origin
-           FROM good_news.headlines h
-WHERE semantic_value != 0 -- remove neutral headlines
+           WHEN h.origin IN ('Manchestereveningnews.co.uk', 'Manchester Evening News') THEN 'manchester-evening-news'
+           WHEN h.origin IN ('CNET', 'Cnet.com') THEN 'cnet'
+           WHEN h.origin IN ('Page Six', 'Pagesix.com') THEN 'page-six'
+           WHEN h.origin IN ('Variety.com', 'Variety') THEN 'variety'
+           WHEN h.origin IN ('Deadline', 'Deadline.com') THEN 'deadline'
+           WHEN h.origin IN ('Standard.co.uk', 'Evening Standard') THEN 'evening-standard'
+           WHEN h.origin IN ('MarketWatch', 'Marketwatch.com') THEN 'market-watch'
+           WHEN h.origin IN ('Forbes', 'Forbes.com') THEN 'forbes'
+           WHEN h.origin IN ('Walesonline.co.uk', 'Wales Online') THEN 'wales-online'
+           WHEN h.origin IN ('Dailyrecord.co.uk', 'Daily Record') THEN 'daily-record'
+           WHEN h.origin IN ('fox', 'Fox Business', 'Foxbusiness.com') THEN 'fox'
+           WHEN h.origin IN ('MacRumors', 'Macrumors.com') THEN 'mac-rumors'
+           WHEN h.origin IN ('TMZ', 'Tmz.com') THEN 'tmz'
+           WHEN h.origin IN ('Liverpool Echo', 'Liverpoolecho.co.uk') THEN 'liverpool-echo'
+           WHEN h.origin IN ('NBCSports.com', 'Nbcsports.com') THEN 'nbc-sports'
+           WHEN h.origin IN ('Daily Beast', 'Thedailybeast.com') THEN 'daily-beast'
+           ELSE h.origin END as filtered_origin
+FROM good_news.headlines h
+where (headline like '%Trump%' or headline like '%Donald %')
 GROUP BY filtered_origin
 ORDER BY headlines_count DESC, filtered_origin;
----- gives count of headlines, count of positive headlines, and divides them to create percent of positive. 
----- also rounds up to 2. removes neutral headlines from being included.
+--- gives us sentiment value for all headlines about trump, ordered by how many per news outlet
 
-AND (headline LIKE '%Trump%' OR headline LIKE '%Donald %')
----- add this statement to do the same for headlines concerning trump
