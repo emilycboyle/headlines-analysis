@@ -11,7 +11,6 @@ SELECT COUNT(h.id)           AS  headlines_count,
            WHEN h.origin IN ('The Times', 'Thetimes.co.uk', 'the-times') THEN 'the-times'
            WHEN h.origin IN ('Nytimes.com', 'New York Times') THEN 'the-new-york-times'
            WHEN h.origin IN ('Nypost.com', 'New York Post') THEN 'new-york-post'
-           WHEN h.origin IN ('NPR', 'Npr.org') THEN 'new-york-post'
            WHEN h.origin IN ('Skysports.com', 'Sky Sports', 'Sky', 'Sky.com') THEN 'sky'
            WHEN h.origin IN ('CNBC', 'cnbc') THEN 'cncb'
            WHEN h.origin IN ('Huffpost.com', 'the-huffington-post', 'HuffPost') THEN 'the-huffington-post'
